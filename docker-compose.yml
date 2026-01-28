@@ -1,25 +1,21 @@
 services:
-  # Service 1: The Database
   db:
     image: mysql:8.0
-    container_name: local_mysql_db
+    container_name: mysql_db
     restart: always
     environment:
-      - MYSQL_DATABASE=product_db
-      - MYSQL_ROOT_PASSWORD=root_pass
-      - MYSQL_USER=api_user
-      - MYSQL_PASSWORD=api_pass
+      - MYSQL_DATABASE=dbsu413
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin1234
+      - MYSQL_ROOT_PASSWORD=root_password
     ports:
       - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    # This ensures the DB is actually ready, not just "started"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 10s
+      interval: 10s
+      timeout: 5s
       retries: 5
 
-  # Service 2: Your Product API
   product_api:
     build: .
     container_name: product_api_container
@@ -27,13 +23,5 @@ services:
       - "8080:8080"
     depends_on:
       db:
-        condition: service_healthy  # Wait for the healthcheck to pass
-    environment:
-      # Note: We use 'db' (the service name) instead of an IP address
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/product_db?allowPublicKeyRetrieval=true&useSSL=false
-      - SPRING_DATASOURCE_USERNAME=api_user
-      - SPRING_DATASOURCE_PASSWORD=api_pass
+        condition: service_healthy
     restart: always
-
-volumes:
-  mysql_data:
