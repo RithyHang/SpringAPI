@@ -20,7 +20,7 @@ services:
     build: .
     container_name: product_api_container
     ports:
-      - "9090:8080"
+      - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
